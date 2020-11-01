@@ -1,4 +1,4 @@
-import pandas as pd #映入模块
+import pandas as pd 
 import os
 import numpy as np
 import csv
@@ -48,13 +48,13 @@ def read_seqs(cdr3, epitope, model=1):
     return cdr3_seqs, epit_seqs
 
 
-def load_data(CDR3, Epitope, col=20, row=9, m=1):  # m数值的大小决定了使用何种数据处理方式
+def load_data(CDR3, Epitope, col=20, row=9, m=1): 
 
     new_cdr3_seqs, new_epit_seqs = read_seqs(CDR3, Epitope, m)
 
-    x_feature = np.ndarray(shape=(len(new_cdr3_seqs), row, col + 1, 2))  # 改变数据集的通道数量和shape大小
-    x_feature[:, :, :, 0] = pca_code(new_cdr3_seqs, row, col)  ##第一个通道
-    x_feature[:, :, :, 1] = pca_code(new_epit_seqs, row, col)  ##第二个通道
+    x_feature = np.ndarray(shape=(len(new_cdr3_seqs), row, col + 1, 2))  
+    x_feature[:, :, :, 0] = pca_code(new_cdr3_seqs, row, col) 
+    x_feature[:, :, :, 1] = pca_code(new_epit_seqs, row, col)  
 
     return x_feature
 
@@ -149,8 +149,8 @@ def seq2feature(cdr3, epitope):
     feature_array = np.zeros([len(cdr3), 58, 20])
 
     for i in range(len(cdr3)):
-        cdr3_1 = cdr3[i].upper()  # 把该字符中的小写字母转换成大写字母
-        epitope_1 = epitope[i].upper()  # 把该字符中的小写字母转换成大写字母
+        cdr3_1 = cdr3[i].upper() 
+        epitope_1 = epitope[i].upper() 
         cdr3_epitope_splice = cdr3_1 + epitope_1
         # print(cdr3_epitope_splice)
         new_cdr3_epitope_splice = cdr3_epitope_splice
@@ -162,12 +162,12 @@ def seq2feature(cdr3, epitope):
         aa_onehot = AA_ONE_HOT(new_cdr3_epitope_splice)
         aa_chen = AA_CHEM(new_cdr3_epitope_splice)
 
-        data = np.append(aa_onehot, aa_chen)  # 先拼接成一个行向量
+        data = np.append(aa_onehot, aa_chen)  
         # print(data)
-        dima = aa_onehot.shape  # 获取原矩阵的维数
-        dimn = aa_chen.shape  # 获取原矩阵的维数
+        dima = aa_onehot.shape  
+        dimn = aa_chen.shape  
 
-        cdr3_epitope = data.reshape(dima[0] + dimn[0], dima[1])  # 再通过原矩阵的维数重新组合
+        cdr3_epitope = data.reshape(dima[0] + dimn[0], dima[1]) 
 
         feature_array[i] = cdr3_epitope
     return feature_array
@@ -219,12 +219,12 @@ def deal_file(excel_file_path, user_dir, user_select):
             TCRA_onehot_feature_array = seq2feature(full_TCRA_cdr3, full_Epitope)
             np.save(user_dir + 'TCRA_onehot_feature_array', TCRA_onehot_feature_array)
             #print('3.2')
-            TCRA_Col = 15  # PCA 降维后的特征数量
+            TCRA_Col = 15  
             TCRA_pca_feature = load_data(full_TCRA_cdr3, full_Epitope, TCRA_Col, Row, M)
             np.save(user_dir + 'TCRA_PCA{}_feature_array'.format(TCRA_Col), TCRA_pca_feature)
             #print('3.3')
         else:
-            print('文件中的TCRA和Epitope的数量必须一致！')
+            
             error_info = 1
         
 
@@ -238,7 +238,7 @@ def deal_file(excel_file_path, user_dir, user_select):
                 TCRB_pca_feature = load_data(full_TCRB_cdr3, full_Epitope, i, Row, M)
                 np.save(user_dir + 'TCRB_PCA{}_feature_array'.format(i), TCRB_pca_feature)
         else:
-            print('文件中的TCRB和Epitope的数量必须一致！')
+            
             error_info = 2        
             
 
@@ -251,7 +251,7 @@ def deal_file(excel_file_path, user_dir, user_select):
             np.save(user_dir + 'TCRA_onehot_feature_array', TCRA_onehot_feature_array)
 
             #print('5.2')
-            TCRA_Col = 15  # PCA 降维后的特征数量
+            TCRA_Col = 15  
             TCRA_pca_feature = load_data(full_TCRA_cdr3, full_Epitope, TCRA_Col, Row, M)
             np.save(user_dir + 'TCRA_PCA{}_feature_array'.format(TCRA_Col), TCRA_pca_feature)
             #print('5.3')
@@ -267,7 +267,7 @@ def deal_file(excel_file_path, user_dir, user_select):
         else:
             #print('6')
 
-            print('文件中的TCRA、TCRB和Epitope的数量必须一致！')
+            
             error_info = 3
 
 
