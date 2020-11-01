@@ -118,3 +118,62 @@ The predicted files will be stored in the path "user_dir".
 
 
 
+
+
+
+
+
+
+
+
+The classifier implementations are loosely based on those found in the
+[scikit-learn](http://scikit-learn.org/stable/) library. First, construct a
+classifier with the desired parameters:
+
+    >>> import misvm
+    >>> classifier = misvm.MISVM(kernel='linear', C=1.0, max_iters=50)
+
+Use Python's `help` functionality as in `help(misvm.MISVM)` or read the
+documentation in the code to see which arguments each classifier takes. Then,
+call the `fit` function with some data:
+
+    >>> classifier.fit(bags, labels)
+
+Here, the `bags` argument is a list of "array-like" (could be NumPy arrays, or a
+list of lists) objects representing each bag. Each (array-like) bag has m rows
+and f columns, which correspond to m instances, each with f features. Of course,
+m can be different across bags, but f must be the same. Then `labels` is an
+array-like object containing a label corresponding to each bag. *Each label must
+be either +1 or -1.* You will likely get strange results if you try using
+0/1-valued labels. After training the classifier, you can call the `predict`
+function as:
+
+    >>> labels = classifier.predict(bags)
+
+Here `bags` has the same format as for `fit`, and the function returns an array
+of real-valued predictions (use `numpy.sign(labels)` to get -1/+1 class
+predictions).
+
+In order to get instance-level predictions from a classifier, use the
+`instancePrediction` flag, as in:
+
+    >>> bag_labels, instance_labels = classifier.predict(bags, instancePrediction=True)
+
+The `instancePrediction` flag is not available for bag-level classifiers such
+as the NSK. However, you can always predict the labels of "singleton" bags
+containing a single instance to assign a label to that instance. In this case,
+one should use caution in interpreting the label of an instance produced by a
+bag-level classifier, since these classifiers are designed to make predictions
+based on properties of an entire bag.
+
+An example script is included that trains classifiers on the [musk1
+dataset](http://archive.ics.uci.edu/ml/datasets/Musk+(Version+1)); see:
+> Bache, K. & Lichman, M. (2013). UCI Machine Learning Repository
+> [http://archive.ics.uci.edu/ml]. Irvine, CA: University of California, School
+> of Information and Computer Science.
+
+Install the package or add the `misvm` directory to the `PYTHONPATH` environment
+variable before attempting to run the example using `python example.py` within
+the `example` directory.
+
+
