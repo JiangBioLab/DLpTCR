@@ -12,28 +12,24 @@ thereby allowing robust identification of immunogenic T cell epitopes.
 
 Installation
 ------------
-
-This package can be installed in two ways (the easy way):
+Download DLpTCR by 
+  ```sh
+  git clone https://github.com/JiangBioLab/DLpTCR
+  ```
+This package can be installed in this ways (the easy way):
 
     # If needed:
-    # pip install numpy
-    # pip install scipy
-    # pip install cvxopt
-    pip install -e git+https://github.com/garydoranjr/misvm.git#egg=misvm
+    pip install numpy
 
-or by running the setup file manually
+    pip install tensorflow-gpu
 
-    git clone [the url for misvm]
-    cd misvm
-    python setup.py install
-
-Note the code depends on the `numpy`, `scipy`, and `cvxopt` packages. So have those
+Note the code depends on the `numpy`, `tensorflow` and other packages. So have those
 installed first. The build will likely fail if it can't find them. For more information, see:
 
  + [NumPy](http://www.numpy.org/): Library for efficient matrix math in Python
- + [SciPy](http://www.scipy.org/): Library for more MATLAB-like functionality
- + [CVXOPT](http://cvxopt.org/): Efficient convex (including quadratic program) optimization
-
+ + [tensorflow](https://tensorflow.google.cn/): An end-to-end open source machine learning platform in Python
+ 
+ 
 Contents
 --------
 
@@ -74,34 +70,36 @@ The source code of feature extraction, five-fold cross-validation, model constru
 and prediction are deposited in this floder 'code'.
 1) The source code in folder 'fold' are used to select the appropriate features by five-fold cross validation.
 2) The source code in folder 'train' are used to construct and train the base classifiers.
-3) The source code (feature extraction.py) is used to implement feature extraction.
+3) The source code (XXX_Feature_Extraction.py) is used to implement feature extraction.
 4) The source code (DLpTCR.py) is used to predict the peptide-TCR interaction.
 
 
 How to Use
 ----------
 
+#### Running on GPU or CPU
 
+After you install DLpTCR,  TensorFlow will be installed along with DLpTCR. 
+Refer to Keras documentation to configure TensorFlow to run on GPU/CPU. 
+Note that, if you want to use GPU, you also need to install CUDA and cuDNN; 
+refer to their websites for instructions. If you use "conda install tensorflow-gpu" to install TensorFlow. 
+CPU is only suitable for predicting not training.
 
-
+### For general users who want to perform immunogenic peptide prediction by our provided model :
+cd to the DLpTCR/code folder which contains DLpTCR_server.py, Model_Predict_Feature_Extraction.py.
+    python
     >>> from Feature_Extraction import *
     >>> from DLpTCR_server import *
     >>> input_file_path = '../data/Example_file.xlsx'
 
-
 Please refer to document 'Example_file.xlsx' for the format of the input file.
 Column names are not allowed to change.
 
-
-
     >>> model_select = "AB"  
-
 
 model:pTCRα    user_select = "A" 
 model:pTCRβ    user_select = "B" 
 model:pTCRαβ  user_select = "AB" 
-
-
 
     >>> job_dir_name = 'test'
     >>> user_dir = './user/' + str(job_dir_name) + '/'
@@ -111,9 +109,39 @@ The predicted files will be stored in the path "user_dir".
 
     >>> user_dir_Exists = os.path.exists(user_dir)
     >>> if not user_dir_Exists: 
-    >>>     os.makedirs(user_dir)
+        os.makedirs(user_dir)
     
     >>> error_info,TCRA_cdr3,TCRB_cdr3,Epitope = deal_file(input_file_path, user_dir, model_select)
     >>> output_file_path = save_outputfile(user_dir, user_select, input_file_path,TCRA_cdr3,TCRB_cdr3,Epitope)
+also,you can use the API.py to predict the peptide-TCR interaction.
 
+    python API.py
+
+### For advanced users who want to perform training and predicting by using their own data:
+
+#### For custom training:
+CPU is only suitable for prediction not training. 
+For custom general training using user’s training data:
+```sh
+python Train_Test_Onehot_Chem_Feature_Extraction.py
+python Train_Test_PCA_Feature_Extraction.py
+```
+
+
+The code in Folder DLpTCR/code/fold is then used for 5-fold cross-validation to filter out the best features:
+```sh
+#example
+python CNN_A_fold_onehot.py
+```
+The code in folder DLpTCR/code/train is then used to filter out the best features for model training
+
+```sh
+#example
+python CNN_A_ALL_onehot.py
+```
+
+###Citation：
+
+Please cite the following paper for using DLpTCR: 
+Predicting immunogenic peptide recognized by TCR through ensemble deep learning
 
