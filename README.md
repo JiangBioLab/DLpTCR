@@ -140,7 +140,7 @@ The code in folder DLpTCR/code/train is then used to filter out the best feature
 python CNN_A_ALL_onehot.py
 ```
 
-###Citation：
+### Citation：
 
 Please cite the following paper for using DLpTCR: 
 Predicting immunogenic peptide recognized by TCR through ensemble deep learning
