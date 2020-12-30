@@ -1,4 +1,4 @@
-Predicting immunogenic peptide recognized by TCR through ensemble deep learning
+DLpTCR: an ensemble deep learning framework for predicting immunogenic peptide recognized by T cell receptor
 ================================================
 
 
@@ -143,5 +143,6 @@ python CNN_A_ALL_onehot.py
 ### Citation：
 
 Please cite the following paper for using DLpTCR: 
-Predicting immunogenic peptide recognized by TCR through ensemble deep learning
+
+DLpTCR: an ensemble deep learning framework for predicting immunogenic peptide recognized by T cell receptor
 
