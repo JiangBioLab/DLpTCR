@@ -4,7 +4,7 @@ import pandas as pd #映入模块
 from collections import Counter
 import scipy.io as sio
 from Bio import SeqIO
-import cv2
+#import cv2
 import os
 import scipy.misc
 import numpy as np
@@ -92,8 +92,8 @@ def AA_CHEM(AA):
 
 csv_file_path = '../data/TCRA_test.csv'
 human_TRB = pd.read_csv(csv_file_path)
-label = human_TRB.label
-cdr3 = human_TRB.CDR3A
+label = human_TRB.Class_label
+cdr3 = human_TRB.CDR3
 
 epitope = human_TRB.Epitope
 
@@ -137,10 +137,9 @@ np.save('../data/TCRA_test_onehot_label_array',label_array)
 
 csv_file_path = '../data/TCRA_train.csv'
 human_TRB = pd.read_csv(csv_file_path)
-label = human_TRB.iloc[:,0]
-cdr3 = human_TRB.iloc[:,1]
-vgene = human_TRB.iloc[:,2]
-epitope = human_TRB.iloc[:,3]
+label = human_TRB.Class_label
+cdr3 = human_TRB.CDR3
+epitope = human_TRB.Epitope
 
 feature_array = np.zeros([len(cdr3),58,20])
 
