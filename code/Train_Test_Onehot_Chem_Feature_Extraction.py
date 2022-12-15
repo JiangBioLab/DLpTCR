@@ -86,7 +86,7 @@ def AA_CHEM(AA):
     
     return coding_arr
 
-### 只示范α链，β链请自己修改代码
+
 
 csv_file_path = '../data/TCRA_test.csv'           
 human_TRB = pd.read_csv(csv_file_path)
@@ -173,3 +173,104 @@ for k in range(len(label)):
     else:      
         label_array[k] = [0,1]
 np.save('../data/TCRA_train_label_array',label_array)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+csv_file_path = '../data/TCRB_test.csv'           
+human_TRB = pd.read_csv(csv_file_path)
+label = human_TRB.Class_label
+cdr3 = human_TRB.CDR3
+
+epitope = human_TRB.Epitope
+
+feature_array = np.zeros([len(cdr3),58,20])
+
+for i in range(len(cdr3)):
+    cdr3_1 = cdr3[i]
+    epitope_1 = epitope[i]
+    cdr3_epitope_splice = cdr3_1 + epitope_1
+    #print(cdr3_epitope_splice)
+    new_cdr3_epitope_splice = cdr3_epitope_splice
+    
+    if len(cdr3_epitope_splice) != 29:
+        for j in range(29-len(cdr3_epitope_splice)):
+
+            new_cdr3_epitope_splice = 'X' + new_cdr3_epitope_splice
+    
+    aa_onehot = AA_ONE_HOT(new_cdr3_epitope_splice)
+    aa_chen = AA_CHEM(new_cdr3_epitope_splice)
+
+    data = np.append(aa_onehot,aa_chen)
+    #print(data)
+    dima = aa_onehot.shape
+    dimn = aa_chen.shape
+    cdr3_epitope = data.reshape(dima[0]+dimn[0],dima[1])
+    
+    feature_array[i]=cdr3_epitope
+np.save('../data/TCRB_test_feature_array',feature_array)
+
+label_array = np.zeros([len(label),2])
+
+
+for k in range(len(label)):
+    if label[k] == 1:
+        label_array[k] = [1,0]
+    else:      
+        label_array[k] = [0,1]
+np.save('../data/TCRB_test_label_array',label_array)
+
+
+csv_file_path = '../data/TCRB_train.csv'
+human_TRB = pd.read_csv(csv_file_path)
+label = human_TRB.Class_label
+cdr3 = human_TRB.CDR3
+epitope = human_TRB.Epitope
+
+feature_array = np.zeros([len(cdr3),58,20])
+
+for i in range(len(cdr3)):
+    cdr3_1 = cdr3[i]
+    epitope_1 = epitope[i]
+    cdr3_epitope_splice = cdr3_1 + epitope_1
+    #print(cdr3_epitope_splice)
+    new_cdr3_epitope_splice = cdr3_epitope_splice
+    
+    if len(cdr3_epitope_splice) != 29:
+        for j in range(29-len(cdr3_epitope_splice)):
+
+            new_cdr3_epitope_splice = 'X' + new_cdr3_epitope_splice
+    
+    aa_onehot = AA_ONE_HOT(new_cdr3_epitope_splice)
+    aa_chen = AA_CHEM(new_cdr3_epitope_splice)
+
+    data = np.append(aa_onehot,aa_chen)
+
+    dima = aa_onehot.shape
+    dimn = aa_chen.shape
+
+    cdr3_epitope = data.reshape(dima[0]+dimn[0],dima[1])
+    feature_array[i]=cdr3_epitope
+np.save('../data/TCRB_train_feature_array',feature_array)
+
+label_array = np.zeros([len(label),2])
+
+for k in range(len(label)):
+    if label[k] == 1:
+        label_array[k] = [1,0]
+    else:      
+        label_array[k] = [0,1]
+np.save('../data/TCRB_train_label_array',label_array)
