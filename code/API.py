@@ -2,7 +2,6 @@ from Model_Predict_Feature_Extraction import *
 
 from DLpTCR_server import *
 
-
 input_file_path = '../data/Example_file.xlsx'
 
 '''

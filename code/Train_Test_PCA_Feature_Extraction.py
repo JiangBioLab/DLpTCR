@@ -1,4 +1,3 @@
-
 import pandas
 import numpy as np
 import os
@@ -84,6 +83,8 @@ def load_data(col=20, row=9, m=1):
 
 
 trainFile = '../data/TCRB_train.csv'
+testFile = '../data/TCRB_test.csv'       ####
+indepFile = '../data/TCRB_COVID-19.csv'  ####
 
 
 m=2
@@ -94,16 +95,38 @@ for i in range(8,21):
     col = i #PCA 降维后的特征数量
     (x_train, y_train), (x_test, y_test), (x_indt, y_indt) = load_data(col=col, row=row, m=m)
 
-    modelfile = './model/tra_resnet_model_{}_{}_{}.h5'.format(m,row,col)
-
-    np.save('./data/train_TCRB_PCA{}_feature_array'.format(col),x_train)
-    np.save('./data/train_TCRB_PCA{}_label_array'.format(col),y_train)
 
 
+    np.save('../data/train_TCRB_PCA{}_feature_array'.format(col),x_train)
+    np.save('../data/train_TCRB_PCA{}_label_array'.format(col),y_train)
+    
+    np.save('../data/test_TCRB_PCA{}_feature_array'.format(col),x_test)
+    np.save('../data/test_TCRB_PCA{}_label_array'.format(col),y_test)
 
 
 
 
+
+trainFile = '../data/TCRA_train.csv'
+testFile = '../data/TCRA_test.csv'       ####
+indepFile = '../data/TCRA_COVID-19.csv'  ####
+
+
+m=2
+row = 20
+#col = 18  #PCA 降维后的特征数量
+
+for i in range(8,21):
+    col = i #PCA 降维后的特征数量
+    (x_train, y_train), (x_test, y_test), (x_indt, y_indt) = load_data(col=col, row=row, m=m)
+
+
+
+    np.save('../data/train_TCRA_PCA{}_feature_array'.format(col),x_train)
+    np.save('../data/train_TCRA_PCA{}_label_array'.format(col),y_train)
+    
+    np.save('../data/test_TCRA_PCA{}_feature_array'.format(col),x_test)
+    np.save('../data/test_TCRA_PCA{}_label_array'.format(col),y_test)
 
 
 

@@ -8,7 +8,6 @@ from sklearn.decomposition import PCA
 
 AminoAcids = 'ARNDCQEGHILKMFPSTWYV'
 
-
 def aaindex1PCAValues(n_features=15):
     file = './pca/Amino_Acids_PCAVal{}_dict.txt'.format(n_features)
     with open(file, 'r') as fr:

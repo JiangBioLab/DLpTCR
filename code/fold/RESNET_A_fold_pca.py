@@ -1,5 +1,7 @@
 
 
+
+
 import tensorflow as tf
 
 try:
@@ -49,8 +51,8 @@ def RESNET_pca(Dropout1 = 0, Epochs = 20, Batch_size = 64, PCA_num = 18 ):
     # 还有一个损失函数是 categorical_crossentropy，两者的区别在于输入的真实标签的形式，
     # sparse_categorical 输入的是整形的标签，例如 [1, 2, 3, 4]，categorical 输入的是 one-hot 编码的标签。
     
-    Feature_test = np.load("E:/yanyi/CDR3/process/net_resnet/data/train_TCRA_PCA{}_feature_array.npy".format(PCA_num))    
-    Label_array = np.load("E:/yanyi/CDR3/process/net_resnet/data/train_TCRA_PCA{}_label_array.npy".format(PCA_num))
+    Feature_test = np.load("../../data/train_TCRA_PCA{}_feature_array.npy".format(PCA_num))    
+    Label_array = np.load("../../data/train_TCRA_PCA{}_label_array.npy".format(PCA_num))
     print('\n\nPCA_NUM: {}'.format(PCA_num))
     print('Feature.shape: {}'.format(Feature_test.shape))
     #print('Label.shape: {}'.format(Label_array.shape))

@@ -1,5 +1,3 @@
-
-
 import pandas as pd #映入模块
 from collections import Counter
 import scipy.io as sio
@@ -88,9 +86,9 @@ def AA_CHEM(AA):
     
     return coding_arr
 
+### 只示范α链，β链请自己修改代码
 
-
-csv_file_path = '../data/TCRA_test.csv'
+csv_file_path = '../data/TCRA_test.csv'           
 human_TRB = pd.read_csv(csv_file_path)
 label = human_TRB.Class_label
 cdr3 = human_TRB.CDR3
@@ -121,7 +119,7 @@ for i in range(len(cdr3)):
     cdr3_epitope = data.reshape(dima[0]+dimn[0],dima[1])
     
     feature_array[i]=cdr3_epitope
-np.save('../data/TCRA_test_onehot_feature_array',feature_array)
+np.save('../data/TCRA_test_feature_array',feature_array)
 
 label_array = np.zeros([len(label),2])
 
@@ -130,7 +128,7 @@ for k in range(len(label)):
         label_array[k] = [1,0]
     else:      
         label_array[k] = [0,1]
-np.save('../data/TCRA_test_onehot_label_array',label_array)
+np.save('../data/TCRA_test_label_array',label_array)
 
 
 
@@ -175,4 +173,3 @@ for k in range(len(label)):
     else:      
         label_array[k] = [0,1]
 np.save('../data/TCRA_train_label_array',label_array)
-

@@ -1,4 +1,3 @@
-
 import tensorflow as tf
 
 try:
@@ -52,11 +51,11 @@ def CNN_onehot(modelfile,Dropout1=0,Epochs= 20,Batch_size=64,):
     # 还有一个损失函数是 categorical_crossentropy，两者的区别在于输入的真实标签的形式，
     # sparse_categorical 输入的是整形的标签，例如 [1, 2, 3, 4]，categorical 输入的是 one-hot 编码的标签。
     
-    train_Feature = np.load("../../data_all/TCRA_train_feature_array.npy")    
-    train_Label = np.load("../../data_all/TCRA_train_label_array.npy")
+    train_Feature = np.load("../../data/TCRA_train_feature_array.npy")    
+    train_Label = np.load("../../data/TCRA_train_label_array.npy")
     
-    test_Feature = np.load("../../data_all/TCRA_test_feature_array.npy")    
-    test_Label = np.load("../../data_all/TCRA_test_label_array.npy")
+    test_Feature = np.load("../../data/TCRA_test_feature_array.npy")    
+    test_Label = np.load("../../data/TCRA_test_label_array.npy")
            
     X_train = train_Feature[:,0:29,:] 
     Y_train = train_Label 
@@ -108,7 +107,7 @@ def CNN_onehot(modelfile,Dropout1=0,Epochs= 20,Batch_size=64,):
                         epochs= Epochs , 
                         batch_size= Batch_size, 
                         verbose=0,
-                        validation_data=[X_test, Y_test],
+                        validation_data=(X_test, Y_test),
                         shuffle=False,
                         callbacks=cbs)
     return history
@@ -126,10 +125,11 @@ csv_writer= csv.writer(csvFile)
 
 
 
-for model_number in range(1,50):
+for model_number in range(1,51):
     
     modelfile = './model/CNN_A_ALL_onehot_{}.h5'.format(model_number)
     CNN_onehot(modelfile,0.3,50,128)
+    print(1)
 
 
 
@@ -212,8 +212,8 @@ for model_number in range(1,51):
 
 
     
-    test_Feature = np.load("../../data_all/TCRA_test_feature_array.npy")    
-    test_Label = np.load("../../data_all/TCRA_test_label_array.npy")
+    test_Feature = np.load("../../data/TCRA_test_feature_array.npy")    
+    test_Label = np.load("../../data/TCRA_test_label_array.npy")
 
     X_test = test_Feature[:,0:29,:] 
     Y_test = test_Label
@@ -233,32 +233,18 @@ for model_number in range(1,51):
     
     #roc_plot(fpr1,tpr1,roc_auc1)
     
-    Feature_test2 = np.load("../../data_all/SARS-CoV-2_TCRA_feature_array.npy")    
-    Label_array2 = np.load("../../data_all/SARS-CoV-2_TCRA_label_array.npy")
 
-    X_SARS = Feature_test2[:,0:29,:] 
-
-    Y_SARS = Label_array2
-    X_SARS = X_SARS.reshape([len(X_SARS),29,20,1])
-    
-
-    SARS_CM,accuracy2,precision2,recall2,f12,MCC2,fpr2,tpr2,roc_auc2 = computing_result(X_SARS,Y_SARS,model)
-    
     test_row = [model_number,'TEST',
                 test_CM[0][0],test_CM[0][1],
                 test_CM[1][0],test_CM[1][1],
                 accuracy1,precision1,recall1,f11,MCC1,roc_auc1]
     
     
-    SARS_CoV_2_row = [model_number,'SARS-CoV-2',
-                      SARS_CM[0][0],SARS_CM[0][1],
-                      SARS_CM[1][0],SARS_CM[1][1],
-                      accuracy2,precision2,recall2,f12,MCC2,roc_auc2]
-    
+
 
     
     csv_writer.writerow(test_row)
-    csv_writer.writerow(SARS_CoV_2_row)
+
     
     del model
 csvFile.close() 

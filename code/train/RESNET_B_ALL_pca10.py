@@ -1,4 +1,3 @@
-
 import tensorflow.compat.v1 as tf
 
 try:
@@ -53,11 +52,11 @@ def RESNET_pca10(model_number,modelfile,Epochs= 20,Batch_size=32,PCA_num = 10):
     # sparse_categorical 输入的是整形的标签，例如 [1, 2, 3, 4]，categorical 输入的是 one-hot 编码的标签。
     
 
-    train_Feature = np.load("E:/yanyi/CDR3/process/net_resnet/data/train_TCRB_PCA{}_feature_array.npy".format(PCA_num))    
-    train_Label = np.load("E:/yanyi/CDR3/process/net_resnet/data/train_TCRB_PCA{}_label_array.npy".format(PCA_num))
+    train_Feature = np.load("../../data/train_TCRB_PCA{}_feature_array.npy".format(PCA_num))    
+    train_Label = np.load("../../data/train_TCRB_PCA{}_label_array.npy".format(PCA_num))
     
-    test_Feature = np.load("E:/yanyi/CDR3/process/net_resnet/data/test_TCRB_PCA{}_feature_array.npy".format(PCA_num)) 
-    test_Label = np.load("E:/yanyi/CDR3/process/net_resnet/data/test_TCRB_PCA{}_label_array.npy".format(PCA_num))
+    test_Feature = np.load("../../data/test_TCRB_PCA{}_feature_array.npy".format(PCA_num)) 
+    test_Label = np.load("../../data/test_TCRB_PCA{}_label_array.npy".format(PCA_num))
       
            
     X_train = train_Feature
@@ -218,7 +217,7 @@ def resnet_attention_train_predict(row, PCA_num,model_number, modelfile, m, x_tr
                   epochs=Epochs,
                   verbose=0, 
                   #validation_split=0.1,
-                  validation_data=[x_test, y_test],
+                  validation_data=(x_test, y_test),
                   shuffle=False,
                   callbacks=cbs)#callbacks=cbs
     
@@ -295,7 +294,7 @@ def writeMetrics(metricsFile,new_confusion_matrix1,accuracy,precision,recall,f1,
 # In[ ]:
 
 
-def model_pred(modelfile,test_Feature_path,test_Label_path,SARS_Feature_path,SARS_Label_path):
+def model_pred(modelfile,test_Feature_path,test_Label_path):
     K.clear_session()
     tf.reset_default_graph()
     model = load_model(modelfile)
@@ -306,89 +305,86 @@ def model_pred(modelfile,test_Feature_path,test_Label_path,SARS_Feature_path,SAR
     
     test_CM,accuracy1,precision1,recall1,f11,MCC1,fpr1,tpr1,roc_auc1 = computing_result(X_test,Y_test,model)
 
-    X_SARS = np.load(SARS_Feature_path)
-    Y_SARS = np.load(SARS_Label_path)
-    X_SARS = X_SARS.reshape([len(X_SARS),20,PCA_num+1,2])
 
-    SARS_CM,accuracy2,precision2,recall2,f12,MCC2,fpr2,tpr2,roc_auc2 = computing_result(X_SARS,Y_SARS,model)
     
     test_row = [model_number,'TEST',
                 test_CM[0][0],test_CM[0][1],
                 test_CM[1][0],test_CM[1][1],
                 accuracy1,precision1,recall1,f11,MCC1,roc_auc1]
   
-    SARS_CoV_2_row = [model_number,'SARS-CoV-2',
-                      SARS_CM[0][0],SARS_CM[0][1],
-                      SARS_CM[1][0],SARS_CM[1][1],
-                      accuracy2,precision2,recall2,f12,MCC2,roc_auc2]
+
     
     del model
     
     
     
-    return test_row,SARS_CoV_2_row
+    return test_row
+
+
+
+
+
+for model_number in range(1,51):
+    modelfile = './model_test/RESNET_B_ALL_test_pca10_{}.h5'.format(model_number)
+    RESNET_pca10(model_number,modelfile,20,32,10)
+
+
+
+
+def writeMetrics(metricsFile,new_confusion_matrix1,accuracy,precision,recall,f1,MCC,roc_auc,noteInfo=''):
+  
+    with open(metricsFile,'a') as fw:
+        if noteInfo:
+            fw.write('\n\n' + noteInfo + '\n')
+        fw.write('混淆矩阵\n',new_confusion_matrix1[0],'\n',new_confusion_matrix1[1])
+        fw.write('\n准确率ACC:: %f '%accuracy)
+        fw.write('\n精确率precision: %f '%precision)
+        fw.write('\n召回率recall: %f '%recall)
+        fw.write('\nF1: %f '%f1)
+        fw.write('\nMCC: %f '%MCC)
+        fw.write('\nAUC: %f '%roc_auc)
+
 
 
 
 
 fileHeader =['model_number','dataset','TP','FN','FP','TN','ACC','precision','recall','f1','MCC','AUC']
 # 写入数据
-csvFile = open("RESNET_B_ALL_test_pca10_result_neicuntest.csv", "w" , newline='')
+
+csvFile = open("RESNET_B_ALL_pca10_result.csv", "w" , newline='')
 csv_writer = csv.writer(csvFile)
 csv_writer.writerow(fileHeader)
-PCA_num = 10
-for model_number in range(50):
-    print(model_number)
-    modelfile = './model_test/RESNET_B_ALL_test_pca10_{}.h5'.format(model_number)
-    
-    test_Feature_path = "E:/yanyi/CDR3/process/net_resnet/data/test_TCRB_PCA{}_feature_array.npy".format(PCA_num)
-    test_Label_path = "E:/yanyi/CDR3/process/net_resnet/data/test_TCRB_PCA{}_label_array.npy".format(PCA_num)
-    
-    SARS_Feature_path = "E:/yanyi/CDR3/process/net_resnet/data/SARS-CoV-2_TCRB_PCA{}_feature_array.npy".format(PCA_num)
-    SARS_Label_path = "E:/yanyi/CDR3/process/net_resnet/data/SARS-CoV-2_TCRB_PCA{}_label_array.npy".format(PCA_num)
-      
-    test_row,SARS_CoV_2_row = model_pred(modelfile,test_Feature_path,test_Label_path,SARS_Feature_path,SARS_Label_path)
-    csv_writer.writerow(test_row)
-    csv_writer.writerow(SARS_CoV_2_row)
-    
-    del modelfile
 
-    
+for model_number in range(1,51):
 
-csvFile.close() 
-
-
-
-
-
-PCA_num = 10
-for model_number in range(50):
-    print(model_number)
-    modelfile = './model_test/RESNET_B_ALL_test_pca10_{}.h5'.format(model_number)
-    
-    test_Feature_path = "E:/yanyi/CDR3/process/net_resnet/data/test_TCRB_PCA{}_feature_array.npy".format(PCA_num)
-    test_Label_path = "E:/yanyi/CDR3/process/net_resnet/data/test_TCRB_PCA{}_label_array.npy".format(PCA_num)
-    
-    SARS_Feature_path = "E:/yanyi/CDR3/process/net_resnet/data/SARS-CoV-2_TCRB_PCA{}_feature_array.npy".format(PCA_num)
-    SARS_Label_path = "E:/yanyi/CDR3/process/net_resnet/data/SARS-CoV-2_TCRB_PCA{}_label_array.npy".format(PCA_num)
-      
-
-    
+    modelfile = './model/RESNET_B_ALL_pca10_{}.h5'.format(model_number)
     model = load_model(modelfile)
-    print('load_model')
-    X_test = np.load(test_Feature_path)
-    Y_test = np.load(test_Label_path)
-    print('load_test')
 
 
-    X_SARS = np.load(SARS_Feature_path)
-    Y_SARS = np.load(SARS_Label_path)
-    X_SARS = X_SARS.reshape([len(X_SARS),20,PCA_num+1,2])
-    print('load_SARS')
+    test_Feature = np.load("../../data/test_TCRB_PCA{}_feature_array.npy".format(PCA_num)) 
+    test_Label = np.load("../../data/test_TCRB_PCA{}_label_array.npy".format(PCA_num))
     
+
+
+    X_test = test_Feature
+    Y_test = test_Label
+    X_test = X_test.reshape([len(X_test),20,PCA_num+1,2])
     
-    del model,X_test,Y_test,X_SARS,Y_SARS
+    test_CM,accuracy1,precision1,recall1,f11,MCC1,fpr1,tpr1,roc_auc1 = computing_result(X_test,Y_test,model)
+
     
+    test_row = [model_number,'TEST',
+                test_CM[0][0],test_CM[0][1],
+                test_CM[1][0],test_CM[1][1],
+                accuracy1,precision1,recall1,f11,MCC1,roc_auc1]
+    
+
+    
+    csv_writer.writerow(test_row)
+
+    
+    del model
+csvFile.close() 
 
 
 

@@ -1,4 +1,5 @@
 
+
 import tensorflow as tf
 
 try:
@@ -54,8 +55,8 @@ def FULL_onehot_chem(Dropout1=0,Epochs= 20,Batch_size=64):
     # 还有一个损失函数是 categorical_crossentropy，两者的区别在于输入的真实标签的形式，
     # sparse_categorical 输入的是整形的标签，例如 [1, 2, 3, 4]，categorical 输入的是 one-hot 编码的标签。
     
-    Feature_test = np.load("../../data_all/TCRB_train_feature_array.npy")    
-    Label_array = np.load("../../data_all/TCRB_train_label_array.npy")
+    Feature_test = np.load("../../data/TCRB_train_feature_array.npy")    
+    Label_array = np.load("../../data/TCRB_train_label_array.npy")
        
     X = Feature_test#[:,0:29,:] #提取one-hot特征
     #print(X[0])
