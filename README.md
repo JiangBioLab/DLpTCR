@@ -19,10 +19,13 @@ Download DLpTCR by
 This package can be installed in this ways (the easy way):
 
     # If needed:
-    pip install numpy
+    pip install -r requirements.txt
+    # Or
+    conda install --yes --file requirements.txt
+    # Or you can create a new environment 
+    conda create --name dlptcr --file requirements.txt
 
-    pip install tensorflow-gpu
-
+    
 Note the code depends on the `numpy`, `tensorflow` and other packages. So have those
 installed first. The build will likely fail if it can't find them. For more information, see:
 
